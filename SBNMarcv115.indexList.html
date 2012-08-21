@@ -1,0 +1,585 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <title>Schema documentation for </title>
+      <link rel="stylesheet" href="docHtml.css" type="text/css" /><script type="text/javascript">
+         <!--
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        var button_prefix = 'button_';
+        
+        /**
+        * Returns an element in the current HTML document.
+        *
+        * @param elementID Identifier of HTML element
+        * @return               HTML element object
+        */
+        function getElementObject(elementID) {
+            var elemObj = null;
+            if (document.getElementById) {
+                elemObj = document.getElementById(elementID);
+            }
+            return elemObj;
+        }
+        
+        /**
+        * Switches the state of a collapseable box, e.g.
+        * if it's opened, it'll be closed, and vice versa.
+        *
+        * @param boxID Identifier of box
+        */
+        function switchState(boxID) {
+            var boxObj = getElementObject(boxID);
+            var buttonObj = getElementObject(button_prefix + boxID);
+            if (boxObj == null || buttonObj == null) {
+                // Box or button not found
+            } else if (boxObj.style.display == "none") {
+                // Box is closed, so open it
+                openBox(boxObj, buttonObj);
+            } else if (boxObj.style.display == "block") {
+                // Box is opened, so close it
+                closeBox(boxObj, buttonObj);
+            }
+        }
+        
+        /**
+        * Opens a collapseable box.
+        *
+        * @param boxObj       Collapseable box
+        * @param buttonObj Button controlling box
+        */
+        function openBox(boxObj, buttonObj) {
+            if (boxObj == null || buttonObj == null) {
+                // Box or button not found
+            } else {
+                // Change 'display' CSS property of box
+                boxObj.style.display = "block";
+                
+                // Change text of button
+                if (boxObj.style.display == "block") {
+                    buttonObj.src = "img/btM.gif";
+                }
+            }
+        }
+        
+        /**
+        * Closes a collapseable box.
+        *
+        * @param boxObj       Collapseable box
+        * @param buttonObj Button controlling box
+        */
+        function closeBox(boxObj, buttonObj) {
+            if (boxObj == null || buttonObj == null) {
+                // Box or button not found
+            } else {
+                // Change 'display' CSS property of box
+                boxObj.style.display = "none";
+                
+                // Change text of button
+                if (boxObj.style.display == "none") {
+                    buttonObj.src = "img/btP.gif";
+                }
+            }
+        }
+    
+       function switchStateForAll(buttonObj, boxList) {
+            if (buttonObj == null) {
+                // button not found
+            } else if (buttonObj.value == "+") {
+                // Expand all
+                expandAll(boxList);
+                buttonObj.value = "-";
+            } else if (buttonObj.value == "-") {
+                // Collapse all
+                collapseAll(boxList);
+                buttonObj.value = "+";
+            }
+        }
+        
+        /**
+        * Closes all boxes in a given list.
+        *
+        * @param boxList Array of box IDs
+        */
+        function collapseAll(boxList) {
+            var idx;
+            for (idx = 0; idx < boxList.length; idx++) {
+                var boxObj = getElementObject(boxList[idx]);
+                var buttonObj = getElementObject(button_prefix + boxList[idx]);
+                closeBox(boxObj, buttonObj);
+            }
+        }
+            
+        /**
+        * Open all boxes in a given list.
+        *
+        * @param boxList Array of box IDs
+        */
+        function expandAll(boxList) {
+            var idx;
+            for (idx = 0; idx < boxList.length; idx++) {
+                var boxObj = getElementObject(boxList[idx]);
+                var buttonObj = getElementObject(button_prefix + boxList[idx]);
+                openBox(boxObj, buttonObj);
+            }
+        }
+        
+        /**
+         * Update the message presented in the title of the html page.
+         * - If the documentation was splited by namespace we present something like: "Documentation for namespace 'ns'"
+         * - If the documentation was splited by location we present somehing like: "Documentation for 'Schema.xsd'"
+         * - If no split we always present: "Documentation for 'MainSchema.xsd'"
+         */
+        function updatePageTitle(message) {
+            top.document.title = message;
+        }
+        
+          
+                    
+         /**
+          * Finds an HTML element by its ID and makes it floatable over the normal content.
+          *
+          * @param x_displacement The difference in pixels to the right side of the window from 
+          *           the left side of the element.
+          * @param y_displacement The difference in pixels to the right side of the window from 
+          *           the top of the element.          
+          */
+         function findAndFloat(id, x_displacement, y_displacement){
+
+            var element = getElementObject(id);            
+            
+            window[id + "_obj"] = element;
+            
+            if(document.layers) {
+               element.style = element;
+            }
+            
+            element.current_y = y_displacement;      
+            element.first_time = true;
+         
+            element.floatElement = function(){
+               // It may be closed by an user action.
+                
+               // Target X and Y coordinates.
+               var x, y;
+               
+               var myWidth = 0, myHeight = 0;
+               if( typeof( window.innerWidth ) == 'number' ) {
+                  //Non-IE
+                  myWidth = window.innerWidth;
+                  myHeight = window.innerHeight;
+               } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+                  //IE 6+ in 'standards compliant mode'
+                  myWidth = document.documentElement.clientWidth;
+                  myHeight = document.documentElement.clientHeight;
+               } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+                  //IE 4 compatible
+                  myWidth = document.body.clientWidth;
+                  myHeight = document.body.clientHeight;
+               }
+               
+               
+               x = myWidth - x_displacement;
+               
+               var ns = (navigator.appName.indexOf("Netscape") != -1);               
+               y = ns ? pageYOffset : document.documentElement && document.documentElement.scrollTop ? 
+                  document.documentElement.scrollTop : document.body.scrollTop;               
+               y = y + y_displacement;               
+               
+               // The current y is the current coordinate of the floating element.
+               // This should be at the limit the y target coordinate.
+               this.current_y += (y - this.current_y)/1.25;
+               
+               // Add the pixels constant after the values
+               // and move the element.
+               var px = document.layers ? "" : "px";
+               this.style.left =  x + px;
+               this.style.top =  this.current_y + px;
+                              
+               setTimeout(this.id + "_obj.floatElement()", 100);
+            }
+            
+            element.floatElement();
+            return element;
+          }
+
+         /**
+          * Finds an HTML element by its ID and makes it floatable over the normal content.
+          *
+          * @param x_displacement The difference in pixels to the right side of the window from 
+          *           the left side of the element.
+          * @param y_displacement The difference in pixels to the right side of the window from 
+          *           the top of the element.          
+          */
+         function selectTOCGroupBy(id, isChunked, indexFileLocation, indexFileNamespace, indexFileComponent){
+
+            if (!isChunked) {
+             var selectIds = new Array('toc_group_by_namespace', 'toc_group_by_location', 'toc_group_by_component_type');
+             // Make all the tabs invisible.
+               for (i = 0; i < 3; i++){
+                  var tab = getElementObject(selectIds[i]);
+                  tab.style.display = 'none';
+               }
+               var selTab = getElementObject(id);
+               selTab.style.display = 'block';
+            } else {
+             if (id == 'toc_group_by_namespace') {
+               parent.indexFrame.location = indexFileNamespace;
+             } else  if (id == 'toc_group_by_location') {
+               parent.indexFrame.location = indexFileLocation;
+             } else  if (id == 'toc_group_by_component_type') {
+              parent.indexFrame.location = indexFileComponent;
+             }
+            }
+         }
+          
+
+    --></script></head>
+   <body>
+      <h2><a id="INDEX">Table of Contents</a></h2>
+      <div class="toc">
+         <form action="none">
+            <div><span> Group by: <select id="selectTOC" onchange="selectTOCGroupBy(this.options[this.selectedIndex].value, true, 'SBNMarcv115.indexList.html', 'SBNMarcv115.indexListns.html', 'SBNMarcv115.indexListcomp.html');">
+                     <option value="toc_group_by_namespace">Namespace</option>
+                     <option value="toc_group_by_location" selected="selected">Location</option>
+                     <option value="toc_group_by_component_type">Component Type</option></select></span></div>
+         </form>
+         <div class="level1" id="toc_group_by_location" style="display:block">
+            <div>
+               <div class="level2">
+                  <p><input id="button_SBNMarcv115.xsd" type="image" value="-" src="img/btM.gif" onclick="switchState('SBNMarcv115.xsd');" class="control" /><span class="indexGroupTitle">SBNMarcv115.xsd</span></p>
+                  <div id="SBNMarcv115.xsd" style="display:block">
+                     <div class="horizontalLayout">
+                        <table class="rt">
+                           <tr>
+                              <td class="rt_cornerTopLeft"></td>
+                              <td class="rt_lineTop"></td>
+                              <td class="rt_cornerTopRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_lineLeft"></td>
+                              <td class="rt_content">
+                                 <div class="componentGroupTitle">Elements
+                                    
+                                 </div>
+                                 <div id="SBNMarcv115.xsdElement" style="display:block">
+                                    <div><b><a href="SBNMarcv115_xsd.html#ArrivoLegame" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ArrivoLegame</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SBNMarc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SBNMarc</a></b></div>
+                                 </div>
+                              </td>
+                              <td class="rt_lineRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_cornerBottomLeft"></td>
+                              <td class="rt_lineBottom"></td>
+                              <td class="rt_cornerBottomRight"></td>
+                           </tr>
+                        </table>
+                     </div>
+                     <div class="horizontalLayout">
+                        <table class="rt">
+                           <tr>
+                              <td class="rt_cornerTopLeft"></td>
+                              <td class="rt_lineTop"></td>
+                              <td class="rt_cornerTopRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_lineLeft"></td>
+                              <td class="rt_content">
+                                 <div class="componentGroupTitle">Complex Types
+                                    
+                                 </div>
+                                 <div id="SBNMarcv115.xsdComplex_Type" style="display:block">
+                                    <div><b><a href="SBNMarcv115_xsd.html#AllineaInfoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">AllineaInfoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#AllineatiType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">AllineatiType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#AnticoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">AnticoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#AttivitaAbilitateType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">AttivitaAbilitateType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#AutorePersonaleType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">AutorePersonaleType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CancellaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CancellaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CartograficoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CartograficoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaAutoreType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaAutoreType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDatiAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDatiAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDatiTitType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDatiTitType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDocAnticoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDocAnticoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDocCartograficoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDocCartograficoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDocGraficaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDocGraficaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaDocMusicaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaDocMusicaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaElementoAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaElementoAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaLuogoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaLuogoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaMarcaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaMarcaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaPropostaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaPropostaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaSoggettoDescrittoreClassiReperType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaSoggettoDescrittoreClassiReperType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaTitoloType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaTitoloType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaTitoloUniformeMusicaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaTitoloUniformeMusicaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CercaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CercaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ChiediAllineaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ChiediAllineaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ClasseType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ClasseType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ComunicaAllineatiType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ComunicaAllineatiType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#CreaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">CreaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#DatiDocType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">DatiDocType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#DatiElementoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">DatiElementoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#DescrittoreType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">DescrittoreType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#DocumentoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">DocumentoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ElementAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ElementAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ElementoAutLegatoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ElementoAutLegatoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EnteType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EnteType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EsportaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EsportaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EstraeDatiAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EstraeDatiAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EstraeDatiDocType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EstraeDatiDocType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EstraeDocumentoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EstraeDocumentoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#EstraeElementoAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">EstraeElementoAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#FiltraAllineaTitType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">FiltraAllineaTitType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#FiltraLocalizzaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">FiltraLocalizzaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#FondeType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">FondeType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#GraficoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">GraficoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ImportaInfoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ImportaInfoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ImportaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ImportaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LegameDocType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LegameDocType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LegameElementoAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LegameElementoAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LegameTitAccessoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LegameTitAccessoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LegamiType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LegamiType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LocalizzaInfoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LocalizzaInfoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LocalizzaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LocalizzaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#LuogoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">LuogoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#MarcaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">MarcaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ModernoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ModernoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ModificaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ModificaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#MusicaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">MusicaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#NumStdType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">NumStdType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#OggettiTrovatiType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">OggettiTrovatiType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#OggettoVariatoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">OggettoVariatoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ParametriAuthorityType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ParametriAuthorityType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ParametriConfigType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ParametriConfigType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ParametriDocumentiType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ParametriDocumentiType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#PropostaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">PropostaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#RepertorioType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">RepertorioType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#NO_NAMESPACE_SBNMarc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SBNMarc</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnMessageType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnMessageType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnOggetto" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnOggetto</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnOutputType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnOutputType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnProfileType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnProfileType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnRangeDate" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnRangeDate</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnRequestType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnRequestType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnResponseType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnResponseType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnResultType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnResultType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnUserType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnUserType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SoggettoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SoggettoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#TitAccessoType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">TitAccessoType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#TitoloUniformeMusicaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">TitoloUniformeMusicaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#TitoloUniformeType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">TitoloUniformeType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a015" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a015</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a100" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a100</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a152" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a152</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a200" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a200</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a210" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a210</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a210_GType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a210_GType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a230" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a230</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a250" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a250</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a260" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a260</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a300" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a300</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a676" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a676</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a686" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a686</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a801" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a801</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a830" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a830</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a921" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a921</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a928" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a928</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a929" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a929</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a930" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a930</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#a931" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">a931</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#ac_210Type" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">ac_210Type</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c012" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c012</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c100" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c100</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c101" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c101</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c102" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c102</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c105" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c105</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c110" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c110</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c116" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c116</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c120" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c120</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c121" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c121</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c123" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c123</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c124" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c124</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c125" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c125</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c128" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c128</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c140" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c140</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c200" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c200</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c205" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c205</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c206" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c206</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c207" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c207</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c208" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c208</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c210" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c210</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c215" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c215</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c230" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c230</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c3XX" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c3XX</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c423" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c423</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c801" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c801</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c856" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c856</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c899" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c899</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c922" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c922</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c923" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c923</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c926" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c926</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#c927" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">c927</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#canaliCercaDatiAutType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">canaliCercaDatiAutType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#cf_200Type" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">cf_200Type</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#chiaviAutoreCercaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">chiaviAutoreCercaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#destinatarioPropostaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">destinatarioPropostaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#guidaDoc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">guidaDoc</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#stringaCercaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">stringaCercaType</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#titoloCercaType" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">titoloCercaType</a></b></div>
+                                 </div>
+                              </td>
+                              <td class="rt_lineRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_cornerBottomLeft"></td>
+                              <td class="rt_lineBottom"></td>
+                              <td class="rt_cornerBottomRight"></td>
+                           </tr>
+                        </table>
+                     </div>
+                     <div class="horizontalLayout">
+                        <table class="rt">
+                           <tr>
+                              <td class="rt_cornerTopLeft"></td>
+                              <td class="rt_lineTop"></td>
+                              <td class="rt_cornerTopRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_lineLeft"></td>
+                              <td class="rt_content">
+                                 <div class="componentGroupTitle">Simple Types
+                                    
+                                 </div>
+                                 <div id="SBNMarcv115.xsdSimple_Type" style="display:block">
+                                    <div><b><a href="SBNMarcv115_xsd.html#BibliotecaAnag" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">BibliotecaAnag</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnAbilitaOggetto" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnAbilitaOggetto</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnAdesione" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnAdesione</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnAnno" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnAnno</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnAuthority" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnAuthority</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnAzioneLocalizza" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnAzioneLocalizza</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnBiblioteca" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnBiblioteca</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnCitazione" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnCitazione</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnControlloSimili" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnControlloSimili</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnControlloSimiliImporta" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnControlloSimiliImporta</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnData" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnData</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnDatavar" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnDatavar</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnDiagnostico" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnDiagnostico</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnEdizioneDewey" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnEdizioneDewey</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnFormaNome" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnFormaNome</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnID" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnID</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnIndicatore" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnIndicatore</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnKeyRicerca" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnKeyRicerca</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnLegameAut" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnLegameAut</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnLegameDoc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnLegameDoc</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnLegameTitAccesso" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnLegameTitAccesso</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnLivello" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnLivello</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnLocaliz" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnLocaliz</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnMateriale" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnMateriale</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnNaturaDocumento" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnNaturaDocumento</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnNaturaTitAccesso" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnNaturaTitAccesso</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnPolo" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnPolo</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnRespons" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnRespons</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnSimile" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnSimile</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnSpecLegameDoc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnSpecLegameDoc</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnStatoProposta" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnStatoProposta</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnStringaRicerca" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnStringaRicerca</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoAllinea" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoAllinea</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoAllineamento" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoAllineamento</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoAttivita" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoAttivita</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoDigitalizzazione" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoDigitalizzazione</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoElaborazione" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoElaborazione</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoFormato" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoFormato</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoLocalizza" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoLocalizza</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoModifica" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoModifica</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoNomeAutore" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoNomeAutore</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoNota" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoNota</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoOperazione" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoOperazione</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoOrd" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoOrd</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoOutput" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoOutput</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoReticoloDoc" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoReticoloDoc</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoRitorno" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoRitorno</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnTipoSTD" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnTipoSTD</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#SbnUserID" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">SbnUserID</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#agenziaCatalog" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">agenziaCatalog</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#codiceDue" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">codiceDue</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#codiceQuattro" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">codiceQuattro</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#codiceTre" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">codiceTre</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#codiceUno" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">codiceUno</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#coordinateCartog" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">coordinateCartog</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#datazioneMusica" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">datazioneMusica</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#impronta_1" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">impronta_1</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#impronta_2" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">impronta_2</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#impronta_3" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">impronta_3</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#indIncipit" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">indIncipit</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#indicatore" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">indicatore</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#livelloBibliografico" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">livelloBibliografico</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#normeCatalog" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">normeCatalog</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#note" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">note</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#numeroIncipit" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">numeroIncipit</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#numeroSTD" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">numeroSTD</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#registroIncipit" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">registroIncipit</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#siglaRepertorio" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">siglaRepertorio</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#statoRecord" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">statoRecord</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#tipoRecord" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">tipoRecord</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#tipoRepertorio" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">tipoRepertorio</a></b></div>
+                                    <div><b><a href="SBNMarcv115_xsd.html#tipoSeriale" target="mainFrame" title="No namespace" onclick="updatePageTitle('Schema documentation for SBNMarcv115.xsd')">tipoSeriale</a></b></div>
+                                 </div>
+                              </td>
+                              <td class="rt_lineRight"></td>
+                           </tr>
+                           <tr>
+                              <td class="rt_cornerBottomLeft"></td>
+                              <td class="rt_lineBottom"></td>
+                              <td class="rt_cornerBottomRight"></td>
+                           </tr>
+                        </table>
+                     </div>
+                     <div style="clear:left"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="footer">
+         <hr />
+         <div align="center">XML Schema documentation generated by <a href="http://www.oxygenxml.com" target="_parent"><span class="oXygenLogo"><span class="redX">&lt;</span>o<span class="redX">X</span>ygen<span class="redX">/&gt;</span></span></a><sup>®</sup> XML Developer.
+         </div>
+      </div><script type="text/javascript">
+         <!--                     
+                     // The namespace is the selected option in the TOC combo.
+                    
+                     // Floats the toolbar.
+                     var globalControls = getElementObject("global_controls"); 
+                     
+                     if(globalControls != null){
+	                     var browser=navigator.appName;
+						 var version = parseFloat(navigator.appVersion.split('MSIE')[1]);
+						 
+						 var IE6 = false;
+						 if ((browser=="Microsoft Internet Explorer") && (version < 7)){
+						 	IE6 = true;
+						 }
+	
+	                     //alert (IE6 + " |V| " + version);
+	                     
+	                     if(IE6){
+	                     	// On IE 6 the 'fixed' property is not supported. We must use javascript. 
+	                         globalControls.style.position='absolute';                         
+	                         // The global controls will do not exist in the TOC frame, when chunking.
+	                         findAndFloat("global_controls", 225, 30);    
+	                     } else {
+	                      	  globalControls.style.position='fixed';                     	
+	                     }
+	                     
+	                     globalControls.style.right='0';                       
+                     }
+                --></script></body>
+</html>
